@@ -1,64 +1,152 @@
 package com.mdgz.dam.labdam2022;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavDirections;
+import androidx.navigation.Navigation;
 
+import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link BusquedaFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import com.google.android.material.slider.RangeSlider;
+import com.mdgz.dam.labdam2022.databinding.FragmentBusquedaBinding;
+import com.mdgz.dam.labdam2022.utilities.Utilities;
+import com.mdgz.dam.labdam2022.viewmodels.LogViewModel;
+
 public class BusquedaFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public BusquedaFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment BusquedaFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static BusquedaFragment newInstance(String param1, String param2) {
-        BusquedaFragment fragment = new BusquedaFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    private FragmentBusquedaBinding binding;
+    private SharedPreferences pref;
+    private LogViewModel logViewModel;
+    private LayoutInflater inflater;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_busqueda, container, false);
+
+        binding = FragmentBusquedaBinding.inflate(getLayoutInflater());
+        this.inflater = inflater;
+        return binding.getRoot();
+
     }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState)
+    {
+        super.onViewCreated(view,savedInstanceState);
+
+        binding.bHotelCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b)
+            {
+                binding.bWifiSwitch.setEnabled(b);
+            }
+        });
+
+        binding.bPrecioSlider.addOnChangeListener(new RangeSlider.OnChangeListener() {
+            @Override
+            public void onValueChange(@NonNull RangeSlider slider, float value, boolean fromUser)
+            {
+                Float[] valores = binding.bPrecioSlider.getValues().toArray(new Float[0]);
+                binding.bMinimoTitle.setText("Mínimo: " + Utilities.round2(valores[0]));
+                binding.bMaximoTitle.setText("Máximo: " + Utilities.round2(valores[1]));
+            }
+        });
+
+        binding.bOcupantesEdit.addTextChangedListener(new Utilities.TextWatcherExtender() {
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+                if(binding.bOcupantesEdit.getText().length() == 0 || Utilities.editableToInteger(binding.bOcupantesEdit.getText()) < 1)
+                    binding.bOcupantesEdit.setText("1");
+            }
+        });
+
+
+        binding.bLimpiarButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                limpiar();
+            }
+        });
+
+        binding.bBuscarButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                buscar(view);
+            }
+        });
+
+        binding.bAgregarButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int valor = Utilities.editableToInteger(binding.bOcupantesEdit.getText()) + 1;
+                binding.bOcupantesEdit.setText("" + valor);
+
+            }
+        });
+
+        binding.bRemoveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int valor = Utilities.editableToInteger(binding.bOcupantesEdit.getText()) - 1;
+                binding.bOcupantesEdit.setText("" + valor);
+
+            }
+        });
+
+        pref = getContext().getSharedPreferences("com.mdgz.dam.labdam2022_preferences",0);
+        logViewModel = new ViewModelProvider(getActivity()).get(LogViewModel.class);
+
+    }
+
+    protected void buscar(View v)
+    {
+
+        //Preguntar si la preferencia esta activada
+        if(pref.getBoolean("check_uso_app",false))
+        {
+            logViewModel.setGuardado(true);
+            LogViewModel.SearchLog log = logViewModel.getLog();
+
+            //Guardar todos los datos en el view model
+            log.setCant_ocupantes(Utilities.editableToInteger(binding.bOcupantesEdit.getText()));
+            log.setCiudad(binding.bCiudadSpinner.getSelectedItem().toString());
+            log.setDpto(binding.bDepartamentoCheck.isChecked());
+            log.setHotel(binding.bHotelCheck.isChecked());
+            log.setWifi(binding.bWifiSwitch.isChecked());
+            Float[] valores = binding.bPrecioSlider.getValues().toArray(new Float[0]);
+            log.setVal_max(valores[1]);
+            log.setVal_min(valores[0]);
+            log.setTimestamp(Utilities.nowArgentina().toString());
+
+        } else logViewModel.setGuardado(false);
+
+        NavDirections action = BusquedaFragmentDirections.actionBusquedaFragmentToResultadoBusquedaFragment();
+        Navigation.findNavController(v).navigate(action);
+    }
+
+    //Listener del boton limpiar
+    protected void limpiar()
+    {
+
+        int[] valores = getResources().getIntArray(R.array.initial_slider_values);
+        binding.bPrecioSlider.setValues((float)valores[0], (float)valores[1]);
+        binding.bDepartamentoCheck.setChecked(false);
+        binding.bHotelCheck.setChecked(false);
+        binding.bOcupantesEdit.setText("1");
+        binding.bCiudadSpinner.setSelection(0);
+        binding.bWifiSwitch.setChecked(false);
+
+
+    }
+
 }

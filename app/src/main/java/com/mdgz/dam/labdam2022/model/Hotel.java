@@ -1,10 +1,20 @@
 package com.mdgz.dam.labdam2022.model;
 
+import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.ForeignKey;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
+
+
 public class Hotel {
-    Integer id;
-    String nombre;
-    Integer categoria;
-    Ubicacion ubicacion;
+
+    private Integer id;
+    private String nombre;
+    private Integer categoria;
+
+    private Ubicacion ubicacion;
 
     public Hotel(){
         super();
@@ -15,6 +25,7 @@ public class Hotel {
         this.nombre = nombre;
         this.categoria = categoria;
         this.ubicacion = ubicacion;
+
     }
 
     public Integer getId() {
@@ -48,4 +59,5 @@ public class Hotel {
     public void setUbicacion(Ubicacion ubicacion) {
         this.ubicacion = ubicacion;
     }
+
 }

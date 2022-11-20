@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <array name="ciudades">
+        <item>Santa Fe</item>
+        <item>Córdoba</item>
+        <item>Santiago del Estero</item>
+        <item>Buenos Aires</item>
+    </array>
+
+    <array name="initial_slider_values">
+        <item value="valor_inicial">0</item>
+        <item value="valor_final">25000</item>
+    </array>
+
+    <!-- Preferencias -->
+    <string-array name="metodo_pago_valores">
+        <item>EF</item>
+        <item>TC</item>
+        <item>TD</item>
+        <item>DCBU</item>
+    </string-array>
+
+    <string-array name="metodo_pago_titulos">
+        <item>Efectivo</item>
+        <item>Tarjeta de crédito</item>
+        <item>Tarjeta de débito</item>
+        <item>Débito por CBU</item>
+    </string-array>
+
+    <string-array name="moneda_pago_valores">
+        <item>ARS</item>
+        <item>USD</item>
+        <item>EUR</item>
+    </string-array>
+
+    <string-array name="moneda_pago_titulos">
+        <item>Pesos argentinos</item>
+        <item>Dólares</item>
+        <item>Euros</item>
+    </string-array>
+
+
+</resources>

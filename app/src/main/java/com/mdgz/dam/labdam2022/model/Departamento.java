@@ -1,21 +1,26 @@
 package com.mdgz.dam.labdam2022.model;
 
-public class Departamento extends Alojamiento{
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.ForeignKey;
+import androidx.room.Ignore;
+
+import java.util.UUID;
+
+public class Departamento extends Alojamiento {
 
     private Boolean tieneWifi;
     private Double costoLimpieza;
     private Integer cantidadHabitaciones;
+
     private Ubicacion ubicacion;
 
-    public void setUbicacion(Ubicacion ubicacion) {
-        this.ubicacion = ubicacion;
-    }
 
     public Departamento(){
         super();
     }
 
-    public Departamento(Integer id, String titulo, String descripcion, Integer capacidad, Double precioBase, Boolean tieneWifi, Double costoLimpieza, Integer cantidadHabitaciones,Ubicacion ubicacion) {
+    public Departamento(UUID id, String titulo, String descripcion, Integer capacidad, Double precioBase, Boolean tieneWifi, Double costoLimpieza, Integer cantidadHabitaciones, Ubicacion ubicacion) {
         super(id, titulo, descripcion, capacidad, precioBase);
         this.tieneWifi = tieneWifi;
         this.costoLimpieza = costoLimpieza;
@@ -47,8 +52,14 @@ public class Departamento extends Alojamiento{
         this.cantidadHabitaciones = cantidadHabitaciones;
     }
 
+
     @Override
     public Ubicacion getUbicacion() {
-        return null;
+        return ubicacion;
     }
+
+    public void setUbicacion(Ubicacion ubicacion){this.ubicacion = ubicacion;
+    }
+
+
 }

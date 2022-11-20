@@ -3,39 +3,72 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navegacion"
-    app:startDestination="@id/busquedaFragment">
+    app:startDestination="@id/global">
 
-    <fragment
-        android:id="@+id/busquedaFragment"
-        android:name="com.mdgz.dam.labdam2022.BusquedaFragment"
-        android:label="fragment_busqueda"
-        tools:layout="@layout/fragment_busqueda" >
+    <navigation android:id="@+id/global"
+        app:startDestination="@id/busquedaFragment">
+        <fragment
+            android:id="@+id/resultadoBusquedaFragment"
+            android:name="com.mdgz.dam.labdam2022.ResultadoBusquedaFragment"
+            android:label="@string/titulo_resultado"
+            tools:layout="@layout/fragment_resultado_busqueda">
+            <action
+                android:id="@+id/action_resultadoBusquedaFragment_to_detalleAlojamientoFragment"
+                app:destination="@id/detalleAlojamientoFragment" />
+            <action
+                android:id="@+id/action_resultadoBusquedaFragment_to_busquedaFragment"
+                app:destination="@id/busquedaFragment"
+                app:popUpTo="@id/busquedaFragment"
+                app:popUpToInclusive="true" />
+        </fragment>
+        <fragment
+            android:id="@+id/busquedaFragment"
+            android:name="com.mdgz.dam.labdam2022.BusquedaFragment"
+            android:label="@string/titulo_busqueda"
+            tools:layout="@layout/fragment_busqueda">
+            <action
+                android:id="@+id/action_busquedaFragment_to_resultadoBusquedaFragment"
+                app:destination="@id/resultadoBusquedaFragment" />
+        </fragment>
+        <fragment
+            android:id="@+id/detalleAlojamientoFragment"
+            android:name="com.mdgz.dam.labdam2022.DetalleAlojamientoFragment"
+            android:label="@string/titulo_detalle"
+            tools:layout="@layout/fragment_detalle_alojamiento">
+            <action
+                android:id="@+id/action_detalleAlojamientoFragment_to_busquedaFragment"
+                app:destination="@id/busquedaFragment"
+                app:popUpTo="@id/busquedaFragment"
+                app:popUpToInclusive="true" />
+            <action
+                android:id="@+id/action_detalleAlojamientoFragment_to_resultadoBusquedaFragment"
+                app:destination="@id/resultadoBusquedaFragment"
+                app:popUpTo="@id/resultadoBusquedaFragment"
+                app:popUpToInclusive="true" />
+        </fragment>
         <action
-            android:id="@+id/action_busquedaFragment_to_resultadoBusquedaFragment"
-            app:destination="@id/resultadoBusquedaFragment" />
+            android:id="@+id/action_global_settingsFragment"
+            app:destination="@id/settingsFragment" />
+        <action
+            android:id="@+id/action_global_reservasFragment"
+            app:destination="@id/reservasFragment" />
+    </navigation>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.mdgz.dam.labdam2022.SettingsFragment"
+        android:label="@string/label_configuracion" >
+        <action
+            android:id="@+id/action_settingsFragment_to_detalleLogs"
+            app:destination="@id/detalleLogs" />
     </fragment>
     <fragment
-        android:id="@+id/resultadoBusquedaFragment"
-        android:name="com.mdgz.dam.labdam2022.ResultadoBusquedaFragment"
-        android:label="fragment_resultado_busqueda"
-        tools:layout="@layout/fragment_resultado_busqueda" >
-        <action
-            android:id="@+id/action_resultadoBusquedaFragment_to_detalleAlojamientoFragment"
-            app:destination="@id/detalleAlojamientoFragment" />
-        <action
-            android:id="@+id/action_resultadoBusquedaFragment_to_busquedaFragment"
-            app:destination="@id/busquedaFragment" />
-    </fragment>
+        android:id="@+id/detalleLogs"
+        android:name="com.mdgz.dam.labdam2022.DetalleLogs"
+        android:label="@string/label_detalle_uso"
+        tools:layout="@layout/fragment_detalle_logs" />
     <fragment
-        android:id="@+id/detalleAlojamientoFragment"
-        android:name="com.mdgz.dam.labdam2022.DetalleAlojamientoFragment"
-        android:label="fragment_detalle_alojamiento"
-        tools:layout="@layout/fragment_detalle_alojamiento" >
-        <action
-            android:id="@+id/action_detalleAlojamientoFragment_to_busquedaFragment"
-            app:destination="@id/busquedaFragment" />
-        <action
-            android:id="@+id/action_detalleAlojamientoFragment_to_resultadoBusquedaFragment"
-            app:destination="@id/resultadoBusquedaFragment" />
-    </fragment>
+        android:id="@+id/reservasFragment"
+        android:name="com.mdgz.dam.labdam2022.ReservasFragment"
+        android:label="@string/opt_mis_reservas"
+        tools:layout="@layout/fragment_reservas" />
 </navigation>
